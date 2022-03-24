@@ -6,7 +6,7 @@
 #    By: ameteori <ameteori@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/03/14 15:49:15 by ameteori          #+#    #+#              #
-#    Updated: 2022/03/18 18:29:17 by ameteori         ###   ########.fr        #
+#    Updated: 2022/03/23 17:52:57 by ameteori         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,6 +20,8 @@ RM =	rm -rf
 SRC =		main.c\
 			philo.c\
 			utils.c\
+			errors.c\
+			game.c\
 
 INCLUDE =	-I philo.h\
 

@@ -6,18 +6,30 @@
 /*   By: ameteori <ameteori@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/14 15:49:04 by ameteori          #+#    #+#             */
-/*   Updated: 2022/03/18 19:04:01 by ameteori         ###   ########.fr       */
+/*   Updated: 2022/03/24 19:27:12 by ameteori         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	init_mutex()
+int	init_mutex(t_gamerules *rules)
 {
-	
+	int	i;
+
+	i = rules->nb_of_philos;
+	while (--i >= 0)
+	{
+		if (pthread_mutex_init(&(rules->forks[i]), NULL))
+			return (1);
+	}
+	if (pthread_mutex_init(&(rules->for_print), NULL))
+		return (1);
+	if (pthread_mutex_init(&(rules->meal_check), NULL))
+		return (1);
+	return (0);
 }
 
-int init_philo(t_gamerules *rules)
+int	init_philo(t_gamerules *rules)
 {
 	int	i;
 
@@ -40,8 +52,9 @@ int	general_init(t_gamerules *rules, char **av)
 	rules->time_to_sleep = ft_atoi(av[4]);
 	rules->died = 0;
 	rules->all_ate = 0;
-	if (rules->nb_of_philos < 2 || rules->time_to_die < 0 || rules->time_to_eat < 0
-		|| rules->time_to_sleep < 0 || rules->nb_of_philos > MAX_THREADS)
+	if (rules->nb_of_philos < 2 || rules->time_to_die < 0
+		|| rules->time_to_eat < 0 || rules->time_to_sleep < 0
+		|| rules->nb_of_philos > MAX_THREADS)
 		return (1);
 	if (av[5])
 	{
@@ -51,7 +64,8 @@ int	general_init(t_gamerules *rules, char **av)
 	}
 	else
 		rules->must_eat = -1;
-	if (init_mutex())
+	if (init_mutex(rules))
 		return (2);
 	init_philo(rules);
+	return (0);
 }
