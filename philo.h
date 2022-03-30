@@ -6,7 +6,7 @@
 /*   By: ameteori <ameteori@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/14 15:49:07 by ameteori          #+#    #+#             */
-/*   Updated: 2022/03/24 19:29:00 by ameteori         ###   ########.fr       */
+/*   Updated: 2022/03/29 18:44:54 by ameteori         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,11 @@
 typedef struct s_philo
 {
 	int					id;
-	unsigned int		left;
-	unsigned int		right;
+	int					left;
+	int					right;
 	int					count_of_eats;
-	int					last_eat;
-	struct t_gamerules	*rules;
+	long long			last_eat;
+	struct s_gamerules	*rules;
 	pthread_t			thread_id;
 }				t_philo;
 
@@ -53,12 +53,14 @@ typedef struct s_gamerules
 int			init_mutex(t_gamerules *rules);
 int			init_philo(t_gamerules *rules);
 int			general_init(t_gamerules *rules, char **av);
-void		error_manager(int error);
-int			ft_atoi(char *str);
+int			error_manager(int error);
+int			ft_atoi(const char *str);
 long long	timestamp(void);
 long long	time_diff(long long past, long long pres);
 void		smart_sleep(long long time, t_gamerules *rules);
 void		print_action(t_gamerules *rules, int id, char *string);
 void		philo_eating(t_philo *philo);
+int			write_error(char *str);
+int			game(t_gamerules *rules);
 
 #endif

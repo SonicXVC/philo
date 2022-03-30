@@ -6,7 +6,7 @@
 /*   By: ameteori <ameteori@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/23 16:15:36 by ameteori          #+#    #+#             */
-/*   Updated: 2022/03/24 19:25:27 by ameteori         ###   ########.fr       */
+/*   Updated: 2022/03/30 15:20:50 by ameteori         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,87 @@ void	philo_eating(t_philo *philo)
 	pthread_mutex_unlock(&(rules->forks[philo->right]));
 }
 
-// void	philo_thread()
-// {
-// }
+void	*philo_thread(void *current_philo)
+{
+	t_gamerules	*rules;
+	t_philo		*philo;
+	int			i;
+
+	i = 0;
+	philo = (t_philo *)current_philo;
+	rules = philo->rules;
+	if (philo->id % 2)
+		usleep(15000);
+	while (!(rules->died))
+	{
+		philo_eating(philo);
+		if (rules->all_ate)
+			break;
+		print_action(rules, philo->id, "is sleeping");
+		smart_sleep(rules->time_to_sleep, rules);
+		print_action(rules, philo->id, "is thinking");
+		i++;
+	}
+	return (NULL);	
+}
+
+void	death_ch(t_gamerules *rules, t_philo *philo)
+{
+	int	i;
+
+	while (!(rules->all_ate))
+	{
+		i = -1;
+		while (++i < rules->nb_of_philos && !(rules->died))
+		{
+			pthread_mutex_lock(&(rules->meal_check));
+			if (time_diff(philo[i].last_eat, timestamp()) > rules->time_to_die)
+			{
+				print_action(rules, i, "died");
+				rules->died = 1;
+			}
+			pthread_mutex_unlock(&(rules->meal_check));
+			usleep(100);
+		}
+		if (rules->died)
+			break;
+		i = 0;
+		while (rules->must_eat != -1 && i < rules->nb_of_philos && philo[i].count_of_eats >= rules->must_eat)
+			i++;
+		if (i == rules->nb_of_philos)
+			rules->all_ate = 1;
+	}
+}
+
+void	exit_game(t_gamerules *rules, t_philo *philos)
+{
+	int	i;
+
+	i = -1;
+	while (++i < rules->nb_of_philos)
+		pthread_join(philos[i].thread_id, NULL);
+	i = -1;
+	while (++i < rules->nb_of_philos)
+		pthread_mutex_destroy(&(rules->forks[i]));
+	pthread_mutex_destroy(&(rules->for_print));
+}
+
+int	game(t_gamerules *rules)
+{
+	int		i;
+	t_philo	*philo;
+	
+	i = 0;
+	philo = rules->philos;
+	rules->first_timestamp = timestamp();
+	while (i < rules->nb_of_philos)
+	{
+		if (pthread_create(&(philo[i].thread_id), NULL, philo_thread, &(philo[i])))
+			return (1);
+		philo[i].last_eat = timestamp();
+		i++;
+	}
+	death_ch(rules, rules->philos);
+	exit_game(rules, philo);
+	return (0);
+}

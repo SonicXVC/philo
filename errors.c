@@ -6,16 +6,23 @@
 /*   By: ameteori <ameteori@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 18:53:47 by ameteori          #+#    #+#             */
-/*   Updated: 2022/03/24 19:05:44 by ameteori         ###   ########.fr       */
+/*   Updated: 2022/03/29 17:50:13 by ameteori         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	error_manager(int error)
+int	write_error(char *str)
+{
+	printf("ERROR: %s\n", str);
+	return (1);
+}
+
+int	error_manager(int error)
 {
 	if (error == 1)
-		write(1, "Bad args\n", 9);
+		return (write_error("Bad args"));
 	if (error == 2)
-		write(1, "Mutex error\n", 12);
+		return (write_error("Mutex error"));
+	return (1);
 }
