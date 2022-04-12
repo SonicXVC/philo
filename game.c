@@ -6,7 +6,7 @@
 /*   By: ameteori <ameteori@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/23 16:15:36 by ameteori          #+#    #+#             */
-/*   Updated: 2022/03/30 15:20:50 by ameteori         ###   ########.fr       */
+/*   Updated: 2022/03/30 17:49:54 by ameteori         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ void	death_ch(t_gamerules *rules, t_philo *philo)
 			usleep(100);
 		}
 		if (rules->died)
-			break;
+			break;	
 		i = 0;
 		while (rules->must_eat != -1 && i < rules->nb_of_philos && philo[i].count_of_eats >= rules->must_eat)
 			i++;
@@ -83,13 +83,14 @@ void	death_ch(t_gamerules *rules, t_philo *philo)
 	}
 }
 
-void	exit_game(t_gamerules *rules, t_philo *philos)
+void	exit_game(t_gamerules *rules) //, t_philo *philos)
 {
 	int	i;
 
-	i = -1;
-	while (++i < rules->nb_of_philos)
-		pthread_join(philos[i].thread_id, NULL);
+	// i = -1;
+	// (void) philos;
+	//while (++i < rules->nb_of_philos)
+	//	pthread_join(philos[i].thread_id, NULL);
 	i = -1;
 	while (++i < rules->nb_of_philos)
 		pthread_mutex_destroy(&(rules->forks[i]));
@@ -108,10 +109,11 @@ int	game(t_gamerules *rules)
 	{
 		if (pthread_create(&(philo[i].thread_id), NULL, philo_thread, &(philo[i])))
 			return (1);
+		pthread_detach(philo[i].thread_id);
 		philo[i].last_eat = timestamp();
 		i++;
 	}
 	death_ch(rules, rules->philos);
-	exit_game(rules, philo);
+	exit_game(rules);
 	return (0);
 }
