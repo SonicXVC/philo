@@ -6,7 +6,7 @@
 /*   By: ameteori <ameteori@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/23 16:15:36 by ameteori          #+#    #+#             */
-/*   Updated: 2022/03/30 17:49:54 by ameteori         ###   ########.fr       */
+/*   Updated: 2022/04/14 12:53:53 by ameteori         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,7 @@ void	*philo_thread(void *current_philo)
 {
 	t_gamerules	*rules;
 	t_philo		*philo;
-	int			i;
 
-	i = 0;
 	philo = (t_philo *)current_philo;
 	rules = philo->rules;
 	if (philo->id % 2)
@@ -46,13 +44,12 @@ void	*philo_thread(void *current_philo)
 	{
 		philo_eating(philo);
 		if (rules->all_ate)
-			break;
+			break ;
 		print_action(rules, philo->id, "is sleeping");
 		smart_sleep(rules->time_to_sleep, rules);
 		print_action(rules, philo->id, "is thinking");
-		i++;
 	}
-	return (NULL);	
+	return (NULL);
 }
 
 void	death_ch(t_gamerules *rules, t_philo *philo)
@@ -74,23 +71,20 @@ void	death_ch(t_gamerules *rules, t_philo *philo)
 			usleep(100);
 		}
 		if (rules->died)
-			break;	
+			break ;
 		i = 0;
-		while (rules->must_eat != -1 && i < rules->nb_of_philos && philo[i].count_of_eats >= rules->must_eat)
+		while (rules->must_eat != -1 && i < rules->nb_of_philos
+			&& philo[i].count_of_eats >= rules->must_eat)
 			i++;
 		if (i == rules->nb_of_philos)
 			rules->all_ate = 1;
 	}
 }
 
-void	exit_game(t_gamerules *rules) //, t_philo *philos)
+void	exit_game(t_gamerules *rules)
 {
 	int	i;
 
-	// i = -1;
-	// (void) philos;
-	//while (++i < rules->nb_of_philos)
-	//	pthread_join(philos[i].thread_id, NULL);
 	i = -1;
 	while (++i < rules->nb_of_philos)
 		pthread_mutex_destroy(&(rules->forks[i]));
@@ -101,13 +95,14 @@ int	game(t_gamerules *rules)
 {
 	int		i;
 	t_philo	*philo;
-	
+
 	i = 0;
 	philo = rules->philos;
 	rules->first_timestamp = timestamp();
 	while (i < rules->nb_of_philos)
 	{
-		if (pthread_create(&(philo[i].thread_id), NULL, philo_thread, &(philo[i])))
+		if (pthread_create(&(philo[i].thread_id),
+				NULL, philo_thread, &(philo[i])))
 			return (1);
 		pthread_detach(philo[i].thread_id);
 		philo[i].last_eat = timestamp();

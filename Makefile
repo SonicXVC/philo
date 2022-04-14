@@ -6,14 +6,14 @@
 #    By: ameteori <ameteori@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/03/14 15:49:15 by ameteori          #+#    #+#              #
-#    Updated: 2022/03/30 17:54:58 by ameteori         ###   ########.fr        #
+#    Updated: 2022/04/14 12:54:31 by ameteori         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME =	philo
 
 CC =	cc
-CFLAGS =	-g -Werror -Wextra -Wall -MMD -pthread -fsanitize=thread
+CFLAGS =	-g -Werror -Wextra -Wall -MMD -pthread
 
 RM =	rm -rf
 
@@ -22,6 +22,7 @@ SRC =		main.c\
 			utils.c\
 			errors.c\
 			game.c\
+			time.c\
 
 INCLUDE =	-I philo.h\
 

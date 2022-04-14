@@ -1,28 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   time.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ameteori <ameteori@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/14 15:48:56 by ameteori          #+#    #+#             */
-/*   Updated: 2022/04/14 12:52:12 by ameteori         ###   ########.fr       */
+/*   Created: 2022/04/14 12:49:30 by ameteori          #+#    #+#             */
+/*   Updated: 2022/04/14 12:49:31 by ameteori         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	main(int ac, char **av)
+long long	timestamp(void)
 {
-	int			ret;
-	t_gamerules	rules;
+	struct timeval	t;
 
-	if (ac != 5 && ac != 6)
-		return (write_error("Wrong amount of args"));
-	ret = general_init(&rules, av);
-	if (ret)
-		return (error_manager(ret));
-	if (game(&rules))
-		return (write_error("Error, while trying to initiate Threads"));
-	return (0);
+	gettimeofday(&t, NULL);
+	return ((t.tv_sec * 1000) + (t.tv_usec / 1000));
+}
+
+long long	time_diff(long long past, long long pres)
+{
+	return (pres - past);
+}
+
+void	smart_sleep(long long time, t_gamerules *rules)
+{
+	long long	i;
+
+	i = timestamp();
+	while (!rules->died)
+	{
+		if (time_diff(i, timestamp()) >= time)
+			break ;
+		usleep(50);
+	}
 }
